@@ -46,10 +46,4 @@ jobs:
     uses: rewin0087/test_github_actions/.github/workflows/test.yml@master
     with:
       release_args: -h 0
-    secrets:
-      workflow_token: test_token
-    env:
-      BUNDLE_GEMS__CONTRIBSYS__COM: ${{ secrets.SIDEKIQ_PRO_PASSWORD }}
-      BUNDLE_RUBYGEMS__PKG__GITHUB__COM: "hieuk09:${{ secrets.GIT_GITHUB_COM_PASSWORD }}"
-      BUNDLE_GITHUB__COM: x-access-token:${{ secrets.GIT_GITHUB_COM_PASSWORD }}
-      GITHUB_PKG_REG_TOKEN: ${{ secrets.GIT_GITHUB_COM_PASSWORD }}
+    secrets: inherit

@@ -1,0 +1,52 @@
+name: "Release Phase 3"
+
+on:
+  # workflow_run:
+  #   workflows: ["Release Phase 2"]
+  #   types:
+  #     - completed
+  # schedule:
+  #   - cron: '* * * * *'
+  push
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Check out repo 📚
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          repository: rewin0087/test_github_actions
+      - name: Test
+        working-directory: ./
+        run: echo 'third'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        run: npm install
+        shell: bash
+      - name: Release
+        run: node ./index.js ${{ inputs.release_args }} --run
+        shell: bash
+  release:
+    uses: rewin0087/test_github_actions/.github/workflows/test.yml@master
+    with:
+      release_args: -h 0
+    secrets:
+      workflow_token: test_token
+    env:
+      TESTING: 'testing_env'
